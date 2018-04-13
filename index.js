@@ -81,13 +81,13 @@ Plugin.prototype.apply = function (compiler) {
         console.log('Taking sources from config file');
       } else {
         compilation.chunks.forEach(function (chunk) {
-          chunk.modules.forEach(function (module) {
+          for(const module of chunk.modulesIterable) {
             if (module.fileDependencies) {
               module.fileDependencies.forEach(function (filepath) {
                 files.push(path.relative(process.cwd(), filepath));
               });
             }
-          });
+          }
         });
         merge(obj.source, { include: files });
       }

@@ -62,12 +62,11 @@ Plugin.prototype.apply = function (compiler) {
   var self = this;
   var options = self.options;
 
-  compiler.plugin('watch-run', function (watching, callback) {
+  compiler.hooks.watchRun.tap('JsDoc', function() {
     self.webpackIsWatching = true;
-    callback(null, null);
   });
 
-  compiler.plugin('emit', function (compilation, callback) {
+  compiler.hooks.emit.tapAsync('JsDoc', function (compilation, callback) {
     console.log('JSDOC Start generating');
 
     fsExtra.readJson(path.resolve(process.cwd(), options.conf), function (err, obj) {
@@ -81,13 +80,13 @@ Plugin.prototype.apply = function (compiler) {
         console.log('Taking sources from config file');
       } else {
         compilation.chunks.forEach(function (chunk) {
-          chunk.modules.forEach(function (module) {
+          for(const module of chunk.modulesIterable) {
             if (module.fileDependencies) {
               module.fileDependencies.forEach(function (filepath) {
                 files.push(path.relative(process.cwd(), filepath));
               });
             }
-          });
+          }
         });
         merge(obj.source, { include: files });
       }

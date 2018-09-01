@@ -72,8 +72,8 @@ Plugin.prototype.apply = function (compiler) {
     fsExtra.readJson(path.resolve(process.cwd(), options.conf), function (err, obj) {
       var files = [];
       if(err) {
-        callback(err);
-        return;
+        compilation.errors.push(err);
+        return callback();
       }
 
       if (obj.source && obj.source.include) {

@@ -88,7 +88,7 @@ Plugin.prototype.apply = function (compiler) {
             }
           }
         });
-        merge(obj.source, { include: files });
+        obj.source = merge(obj.source, { include: files });
       }
 
       /**
